@@ -1,4 +1,4 @@
-@Library('odf-library') _
+@Library('odf-aar-library') _
 
 pipeline {
     agent {
@@ -12,7 +12,7 @@ pipeline {
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
         GITHUB_USER = credentials('GITHUB_USER')
-        IBMCLOUD_API_KEY = credentials('ODF_IBMCLOUD_API_KEY')
+        IBMCLOUD_API_KEY = credentials('AAR_IBMCLOUD_API_KEY')
         GITHUB_TOKEN = credentials('GITHUB_TOKEN')
         REDHAT_USERNAME = credentials('REDHAT_USERNAME')
         REDHAT_PASSWORD = credentials('REDHAT_PASSWORD')
@@ -27,14 +27,14 @@ pipeline {
 
         BASTION_IMAGE = "rhel-85-03292022-tier1"
         RHCOS_IMAGE = "rhcos-411-03092022-tier1"
-        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-sao01-odf-411.txt"
-        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-sao01-odf-411.txt"
+        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         OCP_RELEASE = "4.12"
 
         //Makefile variables
         OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
 
-        TARGET = "deploy-openshift4-powervs"
+        TARGET = "deploy-openshift4-powervs-odf"
         TEMPLATE_FILE = ".${TARGET}.tfvars.template"
         POWERVS = true
         SCRIPT_DEPLOYMENT = false
