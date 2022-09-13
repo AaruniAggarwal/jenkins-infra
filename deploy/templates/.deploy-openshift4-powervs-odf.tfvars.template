@@ -46,5 +46,5 @@ rhcos_kernel_options        = []
 
 setup_squid_proxy = "__SETUP_SQUID_PROXY__"
 
-storage_type                = "notnfs"
+storage_type                = "no"
 setup_snat                  = true
