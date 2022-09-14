@@ -19,8 +19,8 @@ pipeline {
     }
     environment {
         //users and credentials. All must be defined in Jenkins Credentials
-        IBM_CLOUD_API_KEY = credentials('IBMCLOUD_UPSTREAM_CI_API_KEY')
-        PCLOUD_IBM_API_KEY = credentials('IBM_PCLOUD_AAR_API_KEY')
+        IBM_CLOUD_API_KEY = credentials('IBM_PCLOUD_AAR_API_KEY')
+        PCLOUD_IBM_API_KEY = credentials('IBM_PCLOUD_QE_API_KEY')
         PVSADM_VERSION = "v0.1.7"
     }
     stages {
@@ -32,7 +32,7 @@ pipeline {
                     }
                     sh(returnStatus: false, returnStdout: false, script: "curl -sL https://raw.githubusercontent.com/ppc64le-cloud/pvsadm/master/get.sh | VERSION=${PVSADM_VERSION} FORCE=1 bash; pvsadm version")
                     INSTANCE_NAME_LIST.each { item ->
-                        if(item.matches("rdr-svenkat-ocp-storage-(*)")){
+                        if(item.matches("rdr-ocp-upi-validation-(.*)")){
                             env.IBMCLOUD_API_KEY = env.PCLOUD_IBM_API_KEY
                         }
                         else {

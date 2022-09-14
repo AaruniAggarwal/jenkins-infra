@@ -1,4 +1,4 @@
-idef call(String config, String noOfWorkers="3"){
+def call(String config, String noOfWorkers="3"){
     script{
         //Setup PowerVS cluster config
         //Min config

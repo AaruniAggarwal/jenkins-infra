@@ -54,7 +54,7 @@ pipeline {
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-                setupClusterConfig("${CONFIG_TYPE}")
+                setupClusterConfigOdf("${CONFIG_TYPE}")
                 script {
                     env.SYSTEM_TYPE = "e980"
                 }
@@ -76,7 +76,7 @@ pipeline {
                     }
                     try
                     {
-                        pullSecret()
+                        pullSecretOdf()
                         env.OPENSHIFT_IMAGE = ""
                         env.OCP_RELEASE_TAG = ""
                         if (fileExists("deploy/artifactory/latest-${OCP_RELEASE}-build.txt")) {
