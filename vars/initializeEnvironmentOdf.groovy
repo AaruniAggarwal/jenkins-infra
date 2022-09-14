@@ -26,6 +26,7 @@ def call(String region="us-south",resource_group="ocs-resource-group") {
             ibmcloud config --check-version false
             if [ "${POWERVS}" = "true" ] ; then
                 ibmcloud update -f
+                ibmcloud plugin install power-iaas
                 ibmcloud plugin update --all
                 curl -sL https://raw.githubusercontent.com/ppc64le-cloud/pvsadm/master/get.sh | VERSION="v0.1.8" FORCE=1 bash
                 ibmcloud login -a cloud.ibm.com -r ${REGION} -g ${RESOURCE_GROUP} -q --apikey=${IBMCLOUD_API_KEY}
