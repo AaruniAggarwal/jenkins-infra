@@ -41,7 +41,7 @@ pipeline {
         WAIT_FOR_DEBUG = "1"
 
         // Type of configuration
-        CONFIG_TYPE="max"
+        CONFIG_TYPE="min"
 	
 	 }
     
