@@ -1,9 +1,9 @@
 @Library('odf-aar-library') _
 //Define Global variable
 def INSTANCE_NAME_LIST = [
-                    "rdr-svenkat-ocp-storage-lon06-odf-411"
-                    "rdr-svenkat-ocp-storage-sao01-odf-411"
-                    "rdr-svenkat-ocp-storage-syd04-odf-411"
+                    "rdr-svenkat-ocp-storage-lon06-odf-411",
+                    "rdr-svenkat-ocp-storage-sao01-odf-411",
+                    "rdr-svenkat-ocp-storage-syd04-odf-411",
                     "rdr-svenkat-ocp-storage-tok04-odf-411"
                     ]
 pipeline {
