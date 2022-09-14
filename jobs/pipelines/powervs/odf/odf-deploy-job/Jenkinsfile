@@ -54,7 +54,7 @@ pipeline {
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-                setupClusterConfigOdf("${CONFIG_TYPE}")
+                setupClusterConfig("${CONFIG_TYPE}")
                 script {
                     env.SYSTEM_TYPE = "e980"
                 }
