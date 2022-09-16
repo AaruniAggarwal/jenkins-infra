@@ -1,0 +1,78 @@
+@Library('odf-aar-library') _
+
+pipeline {
+    agent {
+        docker {
+            image 'quay.io/powercloud/inbound-agent:4.6-1.5'
+            args '-v /etc/resolv.conf:/etc/resolv.conf'
+            label 'jump-vpc-x86_64'
+        }
+    }
+   
+     environment {
+        //users and credentials. All must be defined in Jenkins Credentials
+        GITHUB_USER = credentials('GITHUB_USER')
+        IBMCLOUD_API_KEY = credentials('AAR_IBMCLOUD_API_KEY')
+        GITHUB_TOKEN = credentials('GITHUB_TOKEN')
+        REDHAT_USERNAME = credentials('REDHAT_USERNAME')
+        REDHAT_PASSWORD = credentials('REDHAT_PASSWORD')
+        PULL_SECRET = credentials('ODF_PULL_SECRET')
+
+        //Env constants
+        TERRAFORM_VER = "1.2.0"
+
+        IBM_CLOUD_REGION = "lon"
+        IBM_CLOUD_ZONE = "lon06"
+        SERVICE_INSTANCE_ID = "fac4755e-8aff-45f5-8d5c-1d3b58b7a229"
+
+        BASTION_IMAGE = "rhel-85"
+        RHCOS_IMAGE = "rhcos-411"
+        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        OCP_RELEASE = "4.11"
+
+        //Makefile variables
+        OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
+
+        TARGET = "deploy-openshift4-powervs-odf"
+        TEMPLATE_FILE = ".${TARGET}.tfvars.template"
+        POWERVS = true
+        SCRIPT_DEPLOYMENT = false
+        WAIT_FOR_DEBUG = "1"
+        BASTION_IP = "158.176.147.109"
+
+        // ODF Variables
+        PLATFORM = "powervs"
+        ODF_VERSION = "4.11"
+        ENABLE_FIPS = false
+        ENABLE_VAULT = false
+       // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
+
+	 }
+    
+    stages {
+        stage('Exporting ODF Environment Variables') {
+            steps {
+                exportOdfEnvironmentVariables()
+            }
+        }
+        stage('Executing ODF Setup Script') {
+            steps {
+                odfSetupScript()
+            }
+        }
+               
+        stage('Deploying ODF') {
+            steps {
+                odfDeployScript()
+            }
+        }
+        stage('Verifying ODF Resources') {
+            steps {
+                checkOdfResources()
+            }
+        }
+        	    
+    }
+}
+
