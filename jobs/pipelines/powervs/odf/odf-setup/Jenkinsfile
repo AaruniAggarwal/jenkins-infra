@@ -8,6 +8,9 @@ pipeline {
             label 'jump-vpc-x86_64'
         }
     }
+    options {
+        copyArtifactPermission('*');
+    }
    
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
@@ -60,8 +63,8 @@ pipeline {
         }
         stage('pull Key artifacts') {
             steps {
-                getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", "id_rsa" )
-                getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", "id_rsa.pub" )
+                getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", id_rsa )
+                getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", id_rsa.pub )
             }
         }
         stage('Prepare to Login') {
