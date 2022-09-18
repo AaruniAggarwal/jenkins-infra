@@ -30,6 +30,7 @@ pipeline {
         BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         OCP_RELEASE = "4.11"
+        WORKSPACE = "/home/jenkins/workspace/testing-aar_odf-test-job_testing"
 
         //Makefile variables
         OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
