@@ -1,5 +1,5 @@
 def call(){
-    withCredentials([string(credentialsId: 'AUTH_YAML', variable: 'FILE')]) {
-        sh 'echo  $FILE > $WORKSPACE/deploy/data/auth.yaml'
+    withCredentials([string(credentialsId: 'ODF_AUTH_FILE', variable: 'FILE')]) {
+        sh 'echo  $FILE > $ODF_AUTH_FILE'
     }
 }

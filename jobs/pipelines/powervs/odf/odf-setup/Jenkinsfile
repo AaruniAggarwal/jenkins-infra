@@ -17,6 +17,7 @@ pipeline {
         REDHAT_USERNAME = credentials('REDHAT_USERNAME')
         REDHAT_PASSWORD = credentials('REDHAT_PASSWORD')
         PULL_SECRET = credentials('ODF_PULL_SECRET')
+        ODF_AUTH = credentials('ODF_AUTH_FILE')
 
         //Env constants
         TERRAFORM_VER = "1.2.0"
@@ -30,8 +31,7 @@ pipeline {
         BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         OCP_RELEASE = "4.11"
-        //WORKSPACE = "/home/jenkins/workspace/testing-aar_odf-test-job_testing"
-
+        
         //Makefile variables
         OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
 
@@ -48,13 +48,58 @@ pipeline {
         ENABLE_FIPS = false
         ENABLE_VAULT = false
        // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
-
 	 }
     
     stages {
-        stage('pull artifact') {
+        stage('Setup Common Environment Variables') {
+            steps {
+                setupCommonEnvironmentVariablesOdf()
+                pullSecretOdf()
+                authYamlOdf()
+            }
+        }
+        stage('pull Key artifacts') {
             steps {
                 getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", "id_rsa" )
+                getArtifactsOdf("powervs/odf-testing-aar/odf-test-job/testing", "id_rsa.pub" )
+            }
+        }
+        stage('Prepare to Login') {
+            steps {
+                script {
+                    ansiColor('xterm') {
+                        echo ""
+                    }
+                    try
+                    {
+                        
+                        if (fileExists("deploy/id_rsa}")) {
+                            //env.WORKSPACE = "/home/jenkins/workspace/powervs/odf-testing-aar/odf-deploy"
+                            def private_file = readFile "deploy/id_rsa"
+                            println(private_file)  > "$WORKSPACE/deploy/id_rsa"
+
+                        }
+                        else{
+                            echo "id_rsa file does not exist. Please check odf-test-job"
+                            throw err
+                        }
+                        if (fileExists("deploy/id_rsa.pub")) {
+                            def public_file = readFile "deploy/id_rsa.pub"
+                            println(public_file)  > "$WORKSPACE/deploy/id_rsa.pub"
+                            
+                        }
+                        else{
+                            echo "id_rsa.pub file does not exist. Please check odf_test_job"
+                            throw err
+                        }
+                    }
+                    catch (err)
+                    {
+                        echo 'Error ! Login to bastion preparation failed !'
+                        env.FAILED_STAGE=env.STAGE_NAME
+                        throw err
+                    }
+                }
             }
         }
         stage('Exporting ODF Environment Variables') {
