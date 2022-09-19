@@ -5,6 +5,7 @@ def call(){
         }
         try {
             sh '''
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "mkdir bin; cp /usr/local/bin/oc /root/bin/"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "cp -r /root/openstack-upi/auth/ /root/"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "cd /root/ocs-upi-kvm/scripts; ./deploy-ocs-ci.sh |tee /root/deploy-ocs-ci.log"
