@@ -57,9 +57,9 @@ pipeline {
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-                pullSecretOdf()
-                authYamlOdf()
-                getKeyOdf()
+               // pullSecretOdf()
+                //authYamlOdf()
+                //getKeyOdf()
             }
         }
            
