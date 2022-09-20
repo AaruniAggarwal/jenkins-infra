@@ -52,16 +52,16 @@ pipeline {
 	 }
     
     stages {
-        /* stage('Setup Common Environment Variables') {
+        stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-                pullSecretOdf()
-                authYamlOdf()
-                getKeyOdf()
+                //pullSecretOdf()
+                //authYamlOdf()
+               // getKeyOdf()
             }
         }
            
-        stage('Exporting ODF Environment Variables') {
+        /* stage('Exporting ODF Environment Variables') {
             steps {
                 exportOdfEnvironmentVariables()
             }
