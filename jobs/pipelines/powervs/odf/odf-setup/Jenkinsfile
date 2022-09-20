@@ -8,10 +8,7 @@ pipeline {
             label 'jump-vpc-x86_64'
         }
     }
-    options {
-        copyArtifactPermission('*');
-    }
-   
+       
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
         GITHUB_USER = credentials('GITHUB_USER')
@@ -51,15 +48,16 @@ pipeline {
         ENABLE_FIPS = false
         ENABLE_VAULT = false
        // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
+        TIER_TEST_SUITE = "1"
 	 }
     
     stages {
-        stage('Setup Common Environment Variables') {
+        /* stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-               // pullSecretOdf()
-                //authYamlOdf()
-                //getKeyOdf()
+                pullSecretOdf()
+                authYamlOdf()
+                getKeyOdf()
             }
         }
            
@@ -78,13 +76,26 @@ pipeline {
             steps {
                 odfDeployScript()
             }
-        }
+        } */
         stage('Verifying ODF Resources') {
             steps {
                 checkOdfResources()
             }
         }
+        stage('Running tier1') {
+            steps {
+                executeTierTestsOdf()
+            }
+        }
         	    
+    }
+    post{
+         always{
+          archiveAllArtifacts("setup-ocs-ci.log", "deploy-ocs-ci.log", "odf-resources.log",
+                "test-ocs-ci-tier-${TIER_TEST_SUITE}.log")
+
+         }
+
     }
 }
 

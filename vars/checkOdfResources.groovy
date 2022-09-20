@@ -5,7 +5,7 @@ def call(){
         }
         try {
             sh '''
-               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo -e "$ oc get nodes \n" > /root/odf-resources.log ; oc get nodes >> /root/odf-resources.log"
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo -e "$ oc get nodes" > /root/odf-resources.log ; oc get nodes >> /root/odf-resources.log"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo -e "\n$ oc get clusterversion \n" >> /root/odf-resources.log ; oc get clusterversion >> /root/odf-resources.log"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo -e "\n$ oc get csv -A \n" >> /root/odf-resources.log ; oc get csv -A >> /root/odf-resources.log"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh; echo -e "\n$ oc get csv odf-operator.v$OCS_VERSION.0 -n openshift-storage -o yaml |grep full_version \n" >> /root/odf-resources.log ; oc get csv odf-operator.v$OCS_VERSION.0 -n openshift-storage -o yaml |grep full_version >> /root/odf-resources.log"
