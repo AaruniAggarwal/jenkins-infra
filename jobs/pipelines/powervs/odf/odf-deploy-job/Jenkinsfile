@@ -46,11 +46,11 @@ pipeline {
 	 }
     
     stages {
-        stage('Clone ansible extra') {
+        /* stage('Clone ansible extra') {
             steps {
                 cloneRepo("git@github.ibm.com:redstack-power/ocp4_ansible_extras.git", "ansible_extra")
             }
-        }
+        } */
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
@@ -60,7 +60,7 @@ pipeline {
                 }
             }
         }
-        stage('pull artifact') {
+        /* stage('pull artifact') {
             steps {
                 getArtifacts("mirror-openshift-release", "latest-${OCP_RELEASE}-build.txt" )
                 getArtifacts("powervs/odf-testing-aar/poll-powervs-images", "${BASTION_IMAGE_FILE}")
@@ -113,7 +113,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } 
         stage('Initialize Environment') {
             steps {
                 initializeEnvironmentOdf()
@@ -138,6 +138,19 @@ pipeline {
             steps {
                 setupKubeconfigOcp4()
             }
-        }	    
+        } */   
+        stage('Destroy OCP') {
+            steps {
+                echo "Destroying OCP cluster and cleaning PowerVS resources"
+            }
+        }
+    }
+    post {
+        always {
+            cleanupOcp4Cluster()
+            checkInfraError()
+            cleanupPowerVSResources()
+            cleanWs()
+        }
     }
 }

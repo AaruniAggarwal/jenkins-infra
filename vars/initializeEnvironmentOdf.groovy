@@ -13,7 +13,6 @@ def call(String region="us-south",resource_group="ocs-resource-group") {
             echo 'Initializing supporting repos and keys !'
             cd ${WORKSPACE}/deploy
             make init
-            make keys:clean
             make keys
             make setup-dependencies
             #check if ibmcloud cli exist
