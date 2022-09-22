@@ -55,13 +55,13 @@ pipeline {
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
-                //pullSecretOdf()
-                //authYamlOdf()
-               // getKeyOdf()
+                pullSecretOdf()
+                authYamlOdf()
+                getKeyOdf()
             }
         }
            
-        /* stage('Exporting ODF Environment Variables') {
+        stage('Exporting ODF Environment Variables') {
             steps {
                 exportOdfEnvironmentVariables()
             }
@@ -76,7 +76,7 @@ pipeline {
             steps {
                 odfDeployScript()
             }
-        } */
+        }
         stage('Verifying ODF Resources') {
             steps {
                 checkOdfResources()
