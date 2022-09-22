@@ -57,7 +57,7 @@ pipeline {
                 setupCommonEnvironmentVariablesOdf()
                 pullSecretOdf()
                 authYamlOdf()
-                getKeyOdf()
+                //getKeyOdf()
             }
         }
            
