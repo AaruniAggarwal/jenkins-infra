@@ -114,11 +114,11 @@ pipeline {
                 }
             }
         } */
-        stage('Initialize Environment') {
+        /* stage('Initialize Environment') {
             steps {
                 initializeEnvironmentOdf()
             }
-        }
+        } */
         /*stage('Setup Terraform Plugin') {
             steps {
                 setupTerraformPlugin()
@@ -141,10 +141,16 @@ pipeline {
         } */   
         stage('Destroy OCP') {
             steps {
-                echo "Destroying OCP cluster and cleaning PowerVS resources"
+                script {
+                sh '''
+                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; \
+                install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl; \
+                '''
+                }          
             }
+
         }
-    }
+            }
     post {
         always {
             cleanupOcp4Cluster()

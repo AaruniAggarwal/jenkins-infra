@@ -38,8 +38,8 @@ pipeline {
 
         BASTION_IMAGE = "rhel-85"
         RHCOS_IMAGE = "rhcos-411"
-        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
-        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf.txt"
+        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf.txt"
         OCP_RELEASE = "4.11"
 
         //Makefile variables
