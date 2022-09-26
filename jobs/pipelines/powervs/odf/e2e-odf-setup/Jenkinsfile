@@ -14,10 +14,7 @@ pipeline {
         string(defaultValue: '', description: 'rhceph-dev/ocs-registry Image used for deploying OCS/ODF', name: 'ocsRegistryImage')
         string(defaultValue: '', description: 'OCS version in which you want to upgrade', name: 'ocsUpgradeVersion')
         string(defaultValue: '', description: 'rhceph-dev/ocs-registry image of upgraded ocs version', name: 'ocsUpgradeRegistryImage')
-        /* validatingString(defaultValue: "4.9", name: "Release", description: "Current Build Release, eg. 4.9", regex: /^[0-9]\.[0-9]+$/, failedValidationMessage: "Please enter OCP releases like 4.9")
-        validatingString(defaultValue: "4.11", name: "NextUpgradeRelease", description: "Next Upgrade Build Release, eg. 4.11", regex: /^[0-9]\.[0-9]+$/, failedValidationMessage: "Please enter OCP releases like 4.10")
-        string(defaultValue: '720', description: 'Enter time(in Minutes) to retain the cluster', name: 'KeepFor') */
-        
+        string(defaultValue: '720', description: 'Enter time(in Minutes) to retain the cluster', name: 'KeepFor')       
     }
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
@@ -37,10 +34,10 @@ pipeline {
         SERVICE_INSTANCE_ID = "fac4755e-8aff-45f5-8d5c-1d3b58b7a229"
 
         BASTION_IMAGE = "rhel-85"
-        RHCOS_IMAGE = "rhcos-411"
+        RHCOS_IMAGE = "rhcos-410"
         BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf.txt"
         RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf.txt"
-        OCP_RELEASE = "4.11"
+        //OCP_RELEASE = "4.10"
 
         //Makefile variables
         OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
@@ -55,15 +52,16 @@ pipeline {
         CONFIG_TYPE="min"
        
         // Parameters
-        OCP_VERSION = "${params.ocpVersion}"
-        OCS_VERSION = "${params.ocsVersion}"
+        OCP_RELEASE = "${params.ocpVersion}"
+        ODF_VERSION = "${params.ocsVersion}"
         UPGRADE_OCS_VERSION = "${params.ocsUpgradeVersion}"
         OCS_REGISTRY_IMAGE = "${params.ocsRegistryImage}"
         UPGRADE_OCS_REGISTRY = "${params.ocsUpgradeRegistryImage}"
+        TIMEOUT = "${params.KeepFor}"
 
         // ODF Variables
         PLATFORM = "powervs"
-        ODF_VERSION = "4.11"
+        //ODF_VERSION = "4.11"
         ENABLE_FIPS = false
         ENABLE_VAULT = false
        // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
@@ -168,7 +166,8 @@ pipeline {
         }
         stage('Exporting ODF Environment Variables') {
             steps {
-                exportOdfEnvironmentVariables()
+                //exportOdfEnvironmentVariables()
+                odfUpgradeEnvironmentVariables()
             }
         }
         stage('Executing ODF Setup Script') {
@@ -187,16 +186,48 @@ pipeline {
                 checkOdfResources()
             }
         }
+        stage('Upgrading ODF to "${UPGRADE_OCS_VERSION}"') {
+            steps {
+                upgradeOdf()
+            }
+        }
+        stage('Gathering ODF resources after Upgrade') {
+            steps {
+                gatherOdfResourcesAfterUpgrade()
+            }
+        }
+
         stage('Running tier1') {
             steps {
                 executeTierTestsOdf()
             }
         }
-        
+        stage('Waiting to timeout') {
+            steps {
+                script {
+                    ansiColor('xterm') {
+                        echo ""
+                    }
+                    try {
+                            TIMEOUT_MIN = TIMEOUT.toInteger()
+                            if ( TIMEOUT_MIN != 0 ){
+                                TIMEOUT_SEC=TIMEOUT_MIN*60
+                                echo "HOLDING THE CLUSTER TEAR DOWN FOR ${TIMEOUT_MIN} MINUTES"
+                                sleep TIMEOUT_SEC
+                            }
+                        }
+                    catch (err) {
+                            echo 'Error ! Timeout stage failed!'
+                            env.FAILED_STAGE=env.STAGE_NAME
+                            throw err
+                    }
+                }
+            }
+        }   
     }
     post {
         always {
-            archiveAllArtifacts("setup-ocs-ci.log", "deploy-ocs-ci.log", "odf-resources.log",
+            archiveAllArtifacts("setup-ocs-ci.log", "deploy-ocs-ci.log", "odf-resources.log", "upgrade-ocs-ci.log", "odf-resources-after-upgrade.log",
                 "test-ocs-ci-tier-${TIER_TEST_SUITE}.log")
             cleanupOcp4Cluster()
             checkInfraError()

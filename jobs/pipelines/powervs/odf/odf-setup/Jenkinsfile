@@ -8,7 +8,7 @@ pipeline {
             label 'jump-vpc-x86_64'
         }
     }
-       
+     // This Jenkinsfile can be used for Deploying ODF on existing OCP cluster(created using ../odf-deploy-job/Jenkinsfile).   
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
         GITHUB_USER = credentials('GITHUB_USER')
@@ -40,7 +40,7 @@ pipeline {
         POWERVS = true
         SCRIPT_DEPLOYMENT = false
         WAIT_FOR_DEBUG = "1"
-        BASTION_IP = "158.176.147.109"
+        BASTION_IP = "158.176.147.109"  // Use this variable when deploying ODF on pre-existing OCP cluster
 
         // ODF Variables
         PLATFORM = "powervs"
@@ -57,7 +57,7 @@ pipeline {
                 setupCommonEnvironmentVariablesOdf()
                 pullSecretOdf()
                 authYamlOdf()
-                //getKeyOdf()
+                getKeyOdf()   // Required to copy id_rsa of existing OCP from credentials folder of jenkins to $WORKSPACE/deploy/
             }
         }
            

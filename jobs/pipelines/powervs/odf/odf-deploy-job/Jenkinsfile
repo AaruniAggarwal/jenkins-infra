@@ -8,7 +8,7 @@ pipeline {
             label 'jump-vpc-x86_64'
         }
     }
-   
+    // This Jenkinsfile is used for creating OCP clusters with minimum requirements of ODF.
      environment {
         //users and credentials. All must be defined in Jenkins Credentials
         GITHUB_USER = credentials('GITHUB_USER')
@@ -46,11 +46,11 @@ pipeline {
 	 }
     
     stages {
-        /* stage('Clone ansible extra') {
+        stage('Clone ansible extra') {
             steps {
                 cloneRepo("git@github.ibm.com:redstack-power/ocp4_ansible_extras.git", "ansible_extra")
             }
-        } */
+        }
         stage('Setup Common Environment Variables') {
             steps {
                 setupCommonEnvironmentVariablesOdf()
@@ -60,7 +60,7 @@ pipeline {
                 }
             }
         }
-        /* stage('pull artifact') {
+        stage('pull artifact') {
             steps {
                 getArtifacts("mirror-openshift-release", "latest-${OCP_RELEASE}-build.txt" )
                 getArtifacts("powervs/odf-testing-aar/poll-powervs-images", "${BASTION_IMAGE_FILE}")
@@ -113,13 +113,13 @@ pipeline {
                     }
                 }
             }
-        } */
+        }
         stage('Initialize Environment') {
             steps {
                 initializeEnvironmentOdf()
             }
         }
-        /*stage('Setup Terraform Plugin') {
+        stage('Setup Terraform Plugin') {
             steps {
                 setupTerraformPlugin()
             }
@@ -138,19 +138,10 @@ pipeline {
             steps {
                 setupKubeconfigOcp4()
             }
-        } */   
-        stage('Destroy OCP') {
-            steps {
-                script {
-                sh '''
-                curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"; \
-                install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl; \
-                '''
-                }          
-            }
-
-        }
-            }
+        }    
+        
+     }
+    // Comment out post section, if you don't want to destroy OCP.
     post {
         always {
             cleanupOcp4Cluster()
