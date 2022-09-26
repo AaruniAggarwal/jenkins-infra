@@ -114,11 +114,11 @@ pipeline {
                 }
             }
         } */
-        /* stage('Initialize Environment') {
+        stage('Initialize Environment') {
             steps {
                 initializeEnvironmentOdf()
             }
-        } */
+        }
         /*stage('Setup Terraform Plugin') {
             steps {
                 setupTerraformPlugin()
