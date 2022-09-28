@@ -1,0 +1,16 @@
+def call() {
+    script {
+        if (fileExists('slacksummary.txt')) {
+            slacksummary = readFile 'slacksummary.txt'
+        }
+        else {
+            slacksummary = "Tier test didn't run"
+        }
+        if ( env.FAILED_STAGE != ""  ) {
+            env.MESSAGE = "ODF version: `${env.ODF_VERSION}` , Tier: `${env.TIER_TEST_SUITE}` , Failed Stage: `${env.FAILED_STAGE}` "
+        }
+        else {
+            env.MESSAGE = "ODF version: `${env.ODF_VERSION}` , Tier: `${env.TIER_TEST_SUITE}` , Tier test summary:`${slacksummary}`"
+        }
+    }
+}

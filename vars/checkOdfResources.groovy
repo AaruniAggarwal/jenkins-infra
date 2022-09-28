@@ -23,6 +23,7 @@ def call(){
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo "oc get bucketclass -n openshift-storage" >> /root/odf-resources.log; oc get bucketclass -n openshift-storage >> /root/odf-resources.log"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo "oc get noobaa -n openshift-storage" >> /root/odf-resources.log; oc get noobaa -n openshift-storage >> /root/odf-resources.log"
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo "oc get noobaa -n openshift-storage -o yaml" >> /root/odf-resources.log; oc get noobaa -n openshift-storage -o yaml >> /root/odf-resources.log"
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "echo "full odf version" >> /root/odf-resources.log; op=`oc get csv -n openshift-storage |grep odf-operator | awk {'print $1'}`; oc get csv $op -n openshift-storage -o yaml |grep full_version >> /root/odf-resources.log"
                scp -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP}:/root/odf-resources.log ${WORKSPACE}/
             '''
         }
