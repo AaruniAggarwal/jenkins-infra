@@ -85,15 +85,18 @@ def call() {
             env.BASTION_TEMPLATE="${JOB_BASE_NAME}"+"-"+"${BUILD_NUMBER}"+"-"+"bas"
             env.RHEL_USERNAME = "root"
             env.OS_INSECURE = true
+            env.WORKER_VOLUME_COUNT="1"
+            env.WORKER_VOLUME_SIZE="500"
 
             // Pull secrets
             env.PULL_SECRET_FILE = "${WORKSPACE}/deploy/data/pull-secret.txt"
+            env.ODF_AUTH_FILE = "${WORKSPACE}/deploy/data/auth.yaml"
 
             env.OPENSHIFT_POWERVC_GIT_TF_DEPLOY_PROJECT="https://github.com/ocp-power-automation/ocp4-upi-powervm.git"
             //Cluster and vm details
             env.CLUSTER_DOMAIN="redhat.com"
-            env.INSTANCE_NAME = "rdr-cicd"
-            env.MOUNT_ETCD_RAMDISK="true"
+            env.INSTANCE_NAME = "rdr-odf"
+            env.MOUNT_ETCD_RAMDISK="false"
             env.CHRONY_CONFIG="true"
             env.SCG_ID = "c5045866-7a78-4b5b-8ae8-061340be64f8"
             env.VOLUME_STORAGE_TEMPLATE = "c340f1_v7k base template"

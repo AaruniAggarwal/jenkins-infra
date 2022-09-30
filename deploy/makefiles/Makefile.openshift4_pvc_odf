@@ -1,0 +1,34 @@
+OPENSHIFT_POWERVC_GIT_TF_DEPLOY_PROJECT ?= "https://github.com/ocp-power-automation/ocp4-upi-powervm"
+OPENSHIFT_POWERVC_GIT_TF_DEPLOY_BRANCH ?= master
+OPENSHIFT_POWERVC_DEPLOY_DIR ?= .deploy-openshift4-powervc-odf/
+OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE ?= .deploy-openshift4-powervc-odf.tfvars
+
+.PHONY: deploy\:openshift4\:powervc\:odf
+## Deploy openshift4 on powervc
+deploy\:openshift4\:powervc\:odf:
+	@$(GIT) clone -b $(OPENSHIFT_POWERVC_GIT_TF_DEPLOY_BRANCH) $(OPENSHIFT_POWERVC_GIT_TF_DEPLOY_PROJECT) $(OPENSHIFT_POWERVC_DEPLOY_DIR)
+	@$(shell) cp data/pull-secret.txt $(OPENSHIFT_POWERVC_DEPLOY_DIR)/ && cp id_rsa* $(OPENSHIFT_POWERVC_DEPLOY_DIR)/ &&  cp $(OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE) $(OPENSHIFT_POWERVC_DEPLOY_DIR)/
+	@$(SELF) terraform:init TERRAFORM_DIR=$(OPENSHIFT_POWERVC_DEPLOY_DIR)
+	@$(SELF) terraform:apply TERRAFORM_VARS_FILE=$(OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE) TERRAFORM_DIR=$(OPENSHIFT_POWERVC_DEPLOY_DIR)
+
+.PHONY: deploy\:openshift4\:powervc\:odf\:redeploy
+## RedoDeploy openshift4 on powervc
+deploy\:openshift4\:powervc\:odf\:redeploy: %redeploy:
+	@$(SELF) terraform:apply TERRAFORM_VARS_FILE=$(OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE) TERRAFORM_DIR=$(OPENSHIFT_POWERVC_DEPLOY_DIR)
+
+.PHONY: deploy\:openshift4\:powervc\:odf\:destroy
+## Destroy openshift4 on powervc deployment resources
+deploy\:openshift4\:powervc\:odf\:destroy: %destroy:
+	@$(SELF) terraform:destroy TERRAFORM_VARS_FILE=$(OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE) TERRAFORM_DIR=$(OPENSHIFT_POWERVC_DEPLOY_DIR)
+
+.PHONY: deploy\:openshift4\:powervc\:odf\:output
+## output openshift4 on powervc deployment resources
+deploy\:openshift4\:powervc\:odf\:output: %output:
+	@$(SELF) terraform:output TERRAFORM_DIR=$(OPENSHIFT_POWERVC_DEPLOY_DIR) TERRAFORM_OUTPUT_VAR=$(TERRAFORM_OUTPUT_VAR)
+
+.PHONY: deploy\:openshift4\:powervc\:odf\:clean
+## Clean up all openshift4 on powervc deployment resources
+deploy\:openshift4\:powervc\:odf\:clean: %clean: %destroy
+ifeq ($(shell test -d $(OPENSHIFT_POWERVC_DEPLOY_DIR) && echo -n yes),yes)
+	@rm -rf $(OPENSHIFT_POWERVC_DEPLOY_DIR)
+endif

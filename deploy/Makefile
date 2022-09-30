@@ -258,6 +258,58 @@ deploy-openshift4-powervs-odf\:clean:
 
 
 # ---------------------------------
+## ----- openshift4-powervc-odf -----
+# ---------------------------------
+
+.PHONY: deploy-openshift4-powervc-odf\:
+## Create power build on powervc tenant
+deploy-openshift4-powervc-odf: %deploy-openshift4-powervc-odf:
+	@$(shell sed -e "s|__OS_AUTH_URL__|$(OS_AUTH_URL)|g" -e "s|__OS_TENANT_NAME__|$(OS_TENANT_NAME)|g" \
+        -e "s|__AVAILABILITY_ZONE__|$(AVAILABILITY_ZONE)|g" -e "s|__INSTANCE_NAME__|$(INSTANCE_NAME)|g" -e "s|__NETWORK_TYPE__|$(NETWORK_TYPE)|g" \
+        -e "s|__OS_IMAGE__|$(OS_IMAGE)|g" -e "s|__OS_NETWORK__|$(OS_NETWORK)|g" \
+		-e "s|__NUM_OF_WORKERS__|$(NUM_OF_WORKERS)|g" -e "s|__WORKER_TEMPLATE__|$(WORKER_TEMPLATE)|g"  \
+		-e "s|__NUM_OF_MASTERS__|$(NUM_OF_MASTERS)|g" -e "s|__MASTER_TEMPLATE__|$(MASTER_TEMPLATE)|g" \
+		-e "s|__WORKER_VOLUME_COUNT__|$(WORKER_VOLUME_COUNT)|g" -e "s|__WORKER_VOLUME_SIZE__|$(WORKER_VOLUME_SIZE)|g" \
+		-e "s|__SCG_ID__|$(SCG_ID)|g" -e "s|__VOLUME_STORAGE_TEMPLATE__|$(VOLUME_STORAGE_TEMPLATE)|g" \
+		-e "s|__SETUP_SQUID_PROXY__|$(SETUP_SQUID_PROXY)|g" -e "s|__PROXY_ADDRESS__|$(PROXY_ADDRESS)|g" \
+		-e "s|__BOOTSTRAP_TEMPLATE__|$(BOOTSTRAP_TEMPLATE)|g" -e "s|__BASTION_TEMPLATE__|$(BASTION_TEMPLATE)|g" \
+		-e "s|__REDHAT_RELEASE__|$(REDHAT_RELEASE)|g" -e "s|__ENABLE_E2E_TEST__|$(ENABLE_E2E_TEST)|g" \
+        -e "s|__REDHAT_USERNAME__|$(REDHAT_USERNAME)|g" -e "s|__REDHAT_PASSWORD__|$(REDHAT_PASSWORD)|g"  \
+        -e "s|__OS_USERNAME__|$(OS_USERNAME)|g" -e "s|__OS_PASSWORD__|$(OS_PASSWORD)|g"  \
+        -e "s|__ARTIFACTORY_USER__|$(ARTIFACTORY_USER)|g" -e "s|__ARTIFACTORY_TOKEN__|$(ARTIFACTORY_TOKEN)|g" \
+		-e "s|__BASTION_IMAGE_ID__|$(BASTION_IMAGE_ID)|g" -e "s|__RHCOS_IMAGE_ID__|$(RHCOS_IMAGE_ID)|g" \
+		-e "s|__RHEL_USERNAME__|$(RHEL_USERNAME)|g" -e "s|__OPENSHIFT_INSTALL_TARBALL__|$(OPENSHIFT_INSTALL_TARBALL)|g" \
+		-e "s|__OPENSHIFT_IMAGE__|$(OPENSHIFT_IMAGE)|g" -e "s|__PULL_SECRET_FILE__|$(PULL_SECRET_FILE)|g" \
+		-e "s|__OPENSHIFT_CLIENT_TARBALL__|$(OPENSHIFT_CLIENT_TARBALL)|g" -e "s|__OPENSHIFT_UPGRADE_IMAGE__|$(OPENSHIFT_UPGRADE_IMAGE)|g" \
+		-e "s|__CLUSTER_DOMAIN__|$(CLUSTER_DOMAIN)|g" -e "s|__CLUSTER_ID__|$(CLUSTER_ID)|g" \
+		-e "s|__E2E_GIT__|$(E2E_GIT)|g" -e "s|__E2E_BRANCH__|$(E2E_BRANCH)|g"  -e "s|__E2E_EXCLUDE_LIST__|$(E2E_EXCLUDE_LIST)|g"\
+		-e "s|__CS_INSTALL__|$(CS_INSTALL)|g" -e "s|__ENABLE_E2E_UPGRADE__|$(ENABLE_E2E_UPGRADE)|g" \
+		-e "s|__GITHUB_USER__|$(GITHUB_USER)|g" -e "s|__GITHUB_TOKEN__|$(GITHUB_TOKEN)|g" \
+		-e "s|__MOUNT_ETCD_RAMDISK__|$(MOUNT_ETCD_RAMDISK)|g" -e "s|__SCALE_NUM_OF_DEPLOYMENTS__|$(SCALE_NUM_OF_DEPLOYMENTS)|g"\
+		-e "s|__ENABLE_SCALE_TEST__|$(ENABLE_SCALE_TEST)|g" -e "s|__GOLANG_TARBALL__|$(GOLANG_TARBALL)|g"\
+        -e "s|__UPGRADE_VERSION__|$(UPGRADE_VERSION)|g" -e "s|__UPGRADE_PAUSE_TIME__|$(UPGRADE_PAUSE_TIME)|g"\
+        -e "s|__UPGRADE_CHANNEL__|$(UPGRADE_CHANNEL)|g" -e "s|__UPGRADE_IMAGE__|$(UPGRADE_IMAGE)|g"\
+        -e "s|__UPGRADE_DELAY_TIME__|$(UPGRADE_DELAY_TIME)|g" -e "s|__CHRONY_CONFIG__|$(CHRONY_CONFIG)|g"\
+        -e "s|__REPO__|$(DEPLOY_REPO)|g" -e "s|__CNI_NETWORK_PROVIDER__|$(CNI_NETWORK_PROVIDER)|g" templates/$(TERRAFORM_VARS_FILE).template > $(TERRAFORM_VARS_FILE))
+	@$(SELF) -s deploy:openshift4:powervc:odf OPENSHIFT_POWERVC_DEPLOY_DIR=$(TERRAFORM_DIR) OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE=$(TERRAFORM_VARS_FILE)
+
+.PHONY: deploy-openshift4-powervc-odf\:redeploy
+## Re deploy on powervc tenant
+deploy-openshift4-powervc-odf\:redeploy:
+	@$(SELF) -s deploy:openshift4:powervc:odf:redeploy OPENSHIFT_POWERVC_DEPLOY_DIR=$(TERRAFORM_DIR) OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE=$(TERRAFORM_VARS_FILE)
+
+.PHONY: deploy-openshift4-powervc-odf\:output
+## Re deploy on powervc tenant
+deploy-openshift4-powervc-odf\:output:
+	@$(SELF) -s deploy:openshift4:powervc:odf:output OPENSHIFT_POWERVC_DEPLOY_DIR=$(TERRAFORM_DIR) TERRAFORM_OUTPUT_VAR=$(TERRAFORM_OUTPUT_VAR)
+
+.PHONY: deploy-openshift4-powervc-odf\:clean
+## Clean up power-openstack build artifacts
+deploy-openshift4-powervc-odf\:clean:
+	@$(SELF) -s deploy:openshift4:powervc:odf:clean OPENSHIFT_POWERVC_DEPLOY_DIR=$(TERRAFORM_DIR) OPENSHIFT_POWERVC_TERRAFORM_VARS_FILE=$(TERRAFORM_VARS_FILE)
+
+
+# ---------------------------------
 ## ----- single-instance-openshift4-powervs -----
 # ---------------------------------
 
