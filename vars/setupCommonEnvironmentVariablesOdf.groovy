@@ -102,21 +102,6 @@ def call() {
             env.VOLUME_STORAGE_TEMPLATE = "c340f1_v7k base template"
             env.CNI_NETWORK_PROVIDER = "OpenshiftSDN"
 
-            //e2e variables
-            if ( env.ENABLE_E2E_TEST ) {
-                env.E2E_GIT="https://github.com/openshift/origin"
-                env.E2E_BRANCH="release-${env.OCP_RELEASE}"
-                env.E2E_EXCLUDE_LIST="https://raw.github.ibm.com/redstack-power/e2e-exclude-list/${env.OCP_RELEASE}-powervm/ocp${env.OCP_RELEASE}_power_exclude_list.txt"
-                env.ENABLE_E2E_UPGRADE="false"
-            }
-
-            //Scale test variables
-            if ( env.ENABLE_SCALE_TEST ) {
-                env.SCALE_NUM_OF_DEPLOYMENTS = "60"
-                env.SCALE_NUM_OF_NAMESPACES = "1000"
-                env.EXPOSE_IMAGE_REGISTRY = "false"
-            }
-
             //Proxy setup
             env.SETUP_SQUID_PROXY = "false"
             env.PROXY_ADDRESS = ""
