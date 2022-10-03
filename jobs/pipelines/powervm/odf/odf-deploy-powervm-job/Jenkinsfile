@@ -75,8 +75,8 @@ pipeline {
             steps {
                 script {
                     getArtifacts("mirror-openshift-release", "latest-${OCP_RELEASE}-build.txt")
-                    getArtifacts("powervm/poll-powervc-images", "cicd-rhcos-${OCP_RELEASE}.latest.txt")
-                    getArtifacts("powervm/poll-powervc-images", "cicd-rhel-${REDHAT_RELEASE}.latest.txt")
+                    getArtifacts("powervm/odf-aar/poll-powervc-images", "rhcos-${OCP_RELEASE}-powercloud-latest.txt")
+                    getArtifacts("powervm/odf-aar/poll-powervc-images", "rhel-${REDHAT_RELEASE}-powercloud-latest.txt")
                 }
             }
         }
@@ -101,22 +101,22 @@ pipeline {
                             echo "latest-${OCP_RELEASE}-build.txt file does not exist. Please check mirror-openshift-release job"
                             throw err
                         }
-                        if (fileExists("deploy/artifactory/cicd-rhcos-${OCP_RELEASE}.latest.txt")) {
-                            env.RHCOS_IMAGE = readFile "deploy/artifactory/cicd-rhcos-${OCP_RELEASE}.latest.txt"
+                        if (fileExists("deploy/artifactory/rhcos-${OCP_RELEASE}-powercloud-latest.txt")) {
+                            env.RHCOS_IMAGE = readFile "deploy/artifactory/rhcos-${OCP_RELEASE}-powercloud-latest.txt"
                             env.RHCOS_IMAGE_NAME = env.RHCOS_IMAGE.split()[0].trim()
                             env.RHCOS_IMAGE_ID = env.RHCOS_IMAGE.split()[1].trim()
                         }
                         else {
-                            echo "cicd-rhcos-${OCP_RELEASE}.latest.txt file does not exist. Please check poll-powervc-images job"
+                            echo "rhcos-${OCP_RELEASE}-powercloud-latest.txt file does not exist. Please check poll-powervc-images job"
                             throw err
                         }
-                        if (fileExists("deploy/artifactory/cicd-rhel-${REDHAT_RELEASE}.latest.txt")) {
-                            env.BASTION_IMAGE = readFile "deploy/artifactory/cicd-rhel-${REDHAT_RELEASE}.latest.txt"
+                        if (fileExists("deploy/artifactory/rhel-${REDHAT_RELEASE}-powercloud-latest.txt")) {
+                            env.BASTION_IMAGE = readFile "deploy/artifactory/rhel-${REDHAT_RELEASE}-powercloud-latest.txt"
                             env.BASTION_IMAGE_NAME = env.BASTION_IMAGE.split()[0].trim()
                             env.BASTION_IMAGE_ID = env.BASTION_IMAGE.split()[1].trim()
                         }
                         else {
-                            echo "cicd-rhel-${REDHAT_RELEASE}.latest.txt file does not exist. Please check poll-powervc-images job"
+                            echo "rhel-${REDHAT_RELEASE}-powercloud-latest.txt file does not exist. Please check poll-powervc-images job"
                             throw err
                         }
                         if (env.DEPLOY_MASTER == "false")
