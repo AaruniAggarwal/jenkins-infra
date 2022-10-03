@@ -43,27 +43,7 @@ volume_storage_template = "__VOLUME_STORAGE_TEMPLATE__"
 
 cni_network_provider = "__CNI_NETWORK_PROVIDER__"
   
-e2e_tests_git = "__E2E_GIT__"
-
-e2e_tests_git_branch = "__E2E_BRANCH__"
-
-e2e_tests_exclude_list_url = "__E2E_EXCLUDE_LIST__"
-
-e2e_tests_enabled = "__ENABLE_E2E_TEST__"
-
-e2e_upgrade_enabled = "__ENABLE_E2E_UPGRADE__"
-
-e2e_upgrade_image = "__OPENSHIFT_UPGRADE_IMAGE__"
-
-github_username = "__GITHUB_USER__"
-
-github_token = "__GITHUB_TOKEN__"
-
 golang_tarball = "__GOLANG_TARBALL__"
-
-scale_test_enabled = "__ENABLE_SCALE_TEST__"
-
-scale_num_of_deployments = "__SCALE_NUM_OF_DEPLOYMENTS__"
 
 upgrade_image = "__UPGRADE_IMAGE__"
 
@@ -84,20 +64,3 @@ chrony_config_servers = [ {server = "0.centos.pool.ntp.org", options = "iburst"}
 setup_squid_proxy = "__SETUP_SQUID_PROXY__"
 proxy = {server = "__PROXY_ADDRESS__"}
 
-cs_install                  = __CS_INSTALL__
-cs_project_name             = "ibm-common-services"
-cs_subscription_channel     = "stable-v1"
-cs_subscription_strategy    = "Automatic"
-cs_operand_list = [
-        "ibm-cert-manager-operator",
-        "ibm-mongodb-operator",
-        "ibm-iam-operator",
-        "ibm-monitoring-exporters-operator",
-        "ibm-monitoring-prometheusext-operator",
-        "ibm-monitoring-grafana-operator",
-        "ibm-healthcheck-operator",
-        "ibm-management-ingress-operator",
-        "ibm-metering-operator",
-        "ibm-commonui-operator",
-        "ibm-ingress-nginx-operator"
-    ]
