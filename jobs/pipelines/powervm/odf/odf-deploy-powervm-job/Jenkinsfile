@@ -29,7 +29,7 @@ pipeline {
         HARDWARE_CHOSE = "P8"
         TERRAFORM_VER = "1.2.0"
         AVAILABILITY_ZONE = "p8_pvm"
-        OCP_RELEASE="4.12"
+        OCP_RELEASE="4.11"
         TARGET = "deploy-openshift4-powervc-odf"
         TEMPLATE_FILE = ".${TARGET}.tfvars.template"
         POWERVS = false

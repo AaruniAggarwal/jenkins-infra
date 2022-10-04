@@ -32,7 +32,7 @@ def call(){
                echo "export OCS_VERSION=${ODF_VERSION}" >> odf_vars.sh
                echo "export RHID_USERNAME=${REDHAT_USERNAME}" >> odf_vars.sh
                echo "export RHID_PASSWORD=${REDHAT_PASSWORD}" >> odf_vars.sh
-               echo "export OCS_REGISTRY_IMAGE=quay.io/rhceph-dev/ocs-registry:latest-stable-${ODF_VERSION}" >> odf_vars.sh
+               echo "export OCS_REGISTRY_IMAGE=${OCS_REGISTRY_IMAGE}" >> odf_vars.sh
                echo "export VAULT_SUPPORT=${ENABLE_VAULT}" >> odf_vars.sh
                echo "export FIPS_ENABLEMENT=${ENABLE_FIPS}" >> odf_vars.sh
                scp -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa odf_vars.sh root@${BASTION_IP}:/root/
