@@ -8,7 +8,7 @@ pipeline {
             label 'jump-vpc-x86_64'
         }
     }
-     parameters {
+    parameters {
         string(defaultValue: '', description: 'OCP version on which OCS/ODF will be deployed', name: 'ocpVersion')
         string(defaultValue: '', description: 'OCS version which you want to upgrade', name: 'ocsVersion')
         string(defaultValue: '', description: 'rhceph-dev/ocs-registry Image used for deploying OCS/ODF', name: 'ocsRegistryImage')
@@ -16,7 +16,7 @@ pipeline {
         string(defaultValue: '', description: 'rhceph-dev/ocs-registry image of upgraded ocs version', name: 'ocsUpgradeRegistryImage')
         string(defaultValue: '720', description: 'Enter time(in Minutes) to retain the cluster', name: 'KeepFor')       
     }
-     environment {
+    environment {
         //users and credentials. All must be defined in Jenkins Credentials
         GITHUB_USER = credentials('GITHUB_USER')
         IBMCLOUD_API_KEY = credentials('AAR_IBMCLOUD_API_KEY')
@@ -33,10 +33,10 @@ pipeline {
         IBM_CLOUD_ZONE = "lon06"
         SERVICE_INSTANCE_ID = "fac4755e-8aff-45f5-8d5c-1d3b58b7a229"
 
-        BASTION_IMAGE = "rhel-85"
-        RHCOS_IMAGE = "rhcos-410"
-        BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
-        RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        //BASTION_IMAGE = "rhel-85"
+        //RHCOS_IMAGE = "rhcos-410"
+        //BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+        //RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
         //OCP_RELEASE = "4.10"
 
         //Makefile variables
@@ -64,15 +64,50 @@ pipeline {
         //ODF_VERSION = "4.11"
         ENABLE_FIPS = false
         ENABLE_VAULT = false
-       // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
+        // OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.0"
         TIER_TEST_SUITE = "1"
 	
-	 }
+    }
     
     stages {
         stage('Clone ansible extra') {
             steps {
                 cloneRepo("git@github.ibm.com:redstack-power/ocp4_ansible_extras.git", "ansible_extra")
+            }
+        }
+        stage('Setting RHCOS and RHEL Images as per OCP version') {
+            steps {
+                switch (env.OCP_RELEASE) {
+                case "4.6":
+                        env.BASTION_IMAGE = "rhel-83"
+                        env.RHCOS_IMAGE = "rhcos-46"
+                        break
+                case "4.7":
+                        env.BASTION_IMAGE = "rhel-83"
+                        env.RHCOS_IMAGE = "rhcos-47"
+                        break
+                case "4.8":
+                        env.BASTION_IMAGE = "rhel-83"
+                        env.RHCOS_IMAGE = "rhcos-48"
+                        break
+                case "4.9":
+                        env.BASTION_IMAGE = "rhel-84"
+                        env.RHCOS_IMAGE = "rhcos-49"
+                        break
+                case "4.10":
+                        env.BASTION_IMAGE = "rhel-84"
+                        env.RHCOS_IMAGE = "rhcos-410"
+                        break
+                case "4.11":
+                        env.BASTION_IMAGE = "rhel-85"
+                        env.RHCOS_IMAGE = "rhcos-411"
+                        break
+                default:
+                     env.BASTION_IMAGE = "rhel-86"
+                     env.RHCOS_IMAGE = "rhcos-412"
+                }
+                env.BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+                env.RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
             }
         }
         stage('Setup Common Environment Variables') {
@@ -209,17 +244,17 @@ pipeline {
                         echo ""
                     }
                     try {
-                            TIMEOUT_MIN = TIMEOUT.toInteger()
-                            if ( TIMEOUT_MIN != 0 ){
-                                TIMEOUT_SEC=TIMEOUT_MIN*60
-                                echo "HOLDING THE CLUSTER TEAR DOWN FOR ${TIMEOUT_MIN} MINUTES"
-                                sleep TIMEOUT_SEC
-                            }
+                        TIMEOUT_MIN = TIMEOUT.toInteger()
+                        if ( TIMEOUT_MIN != 0 ){
+                            TIMEOUT_SEC=TIMEOUT_MIN*60
+                            echo "HOLDING THE CLUSTER TEAR DOWN FOR ${TIMEOUT_MIN} MINUTES"
+                            sleep TIMEOUT_SEC
                         }
+                    }
                     catch (err) {
-                            echo 'Error ! Timeout stage failed!'
-                            env.FAILED_STAGE=env.STAGE_NAME
-                            throw err
+                        echo 'Error ! Timeout stage failed!'
+                        env.FAILED_STAGE=env.STAGE_NAME
+                        throw err
                     }
                 }
             }
