@@ -77,37 +77,40 @@ pipeline {
         }
         stage('Setting RHCOS and RHEL Images as per OCP version') {
             steps {
-                switch (env.OCP_RELEASE) {
+                script {
+                    switch (env.OCP_RELEASE) {
                 case "4.6":
-                        env.BASTION_IMAGE = "rhel-83"
-                        env.RHCOS_IMAGE = "rhcos-46"
-                        break
+                            env.BASTION_IMAGE = "rhel-83"
+                            env.RHCOS_IMAGE = "rhcos-46"
+                            break
                 case "4.7":
-                        env.BASTION_IMAGE = "rhel-83"
-                        env.RHCOS_IMAGE = "rhcos-47"
-                        break
+                            env.BASTION_IMAGE = "rhel-83"
+                            env.RHCOS_IMAGE = "rhcos-47"
+                            break
                 case "4.8":
-                        env.BASTION_IMAGE = "rhel-83"
-                        env.RHCOS_IMAGE = "rhcos-48"
-                        break
+                            env.BASTION_IMAGE = "rhel-83"
+                            env.RHCOS_IMAGE = "rhcos-48"
+                            break
                 case "4.9":
-                        env.BASTION_IMAGE = "rhel-84"
-                        env.RHCOS_IMAGE = "rhcos-49"
-                        break
+                            env.BASTION_IMAGE = "rhel-84"
+                            env.RHCOS_IMAGE = "rhcos-49"
+                            break
                 case "4.10":
-                        env.BASTION_IMAGE = "rhel-84"
-                        env.RHCOS_IMAGE = "rhcos-410"
-                        break
+                            env.BASTION_IMAGE = "rhel-84"
+                            env.RHCOS_IMAGE = "rhcos-410"
+                            break
                 case "4.11":
-                        env.BASTION_IMAGE = "rhel-85"
-                        env.RHCOS_IMAGE = "rhcos-411"
-                        break
+                            env.BASTION_IMAGE = "rhel-85"
+                            env.RHCOS_IMAGE = "rhcos-411"
+                            break
                 default:
                      env.BASTION_IMAGE = "rhel-86"
-                     env.RHCOS_IMAGE = "rhcos-412"
+                            env.RHCOS_IMAGE = "rhcos-412"
+                    }
+            
+                    env.BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
+                    env.RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
                 }
-                env.BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
-                env.RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
             }
         }
         stage('Setup Common Environment Variables') {
