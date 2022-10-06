@@ -5,7 +5,8 @@ def call(){
         }
         try {
             sh '''
-               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh; echo "Testing on ODF Version ${OCS_VERSION}"; cd /root/ocs-upi-kvm/scripts; ./test-ocs-ci.sh --tier ${TIER_TEST_SUITE} |tee /root/test-ocs-ci-tier-${TIER_TEST_SUITE}.log"
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "export OCS_VERSION=`echo ${UPGRADE_OCS_VERSION} | cut -d "." -f 1-2`; export OCS_CSV_CHANNEL=stable-$OCS_VERSION; yq -y -i '.DEPLOYMENT.ocs_csv_channel |= env.OCS_CSV_CHANNEL' /root/ocs-ci-conf.yaml; yq -y -i '.ENV_DATA.ocs_version |= env.OCS_VERSION' $WORKSPACE/ocs-ci-conf.yaml"
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh; export OCS_VERSION=`echo ${UPGRADE_OCS_VERSION} | cut -d "." -f 1-2`; echo "Testing on ODF Version ${OCS_VERSION}"; cd /root/ocs-upi-kvm/scripts; ./test-ocs-ci.sh --tier ${TIER_TEST_SUITE} |tee /root/test-ocs-ci-tier-${TIER_TEST_SUITE}.log"
                scp -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP}:/root/test-ocs-ci-tier-${TIER_TEST_SUITE}.log ${WORKSPACE}/
             '''
         }

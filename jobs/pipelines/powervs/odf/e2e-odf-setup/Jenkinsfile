@@ -33,12 +33,6 @@ pipeline {
         IBM_CLOUD_ZONE = "lon06"
         SERVICE_INSTANCE_ID = "fac4755e-8aff-45f5-8d5c-1d3b58b7a229"
 
-        //BASTION_IMAGE = "rhel-85"
-        //RHCOS_IMAGE = "rhcos-410"
-        //BASTION_IMAGE_FILE = "latest-${BASTION_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
-        //RHCOS_IMAGE_FILE = "latest-${RHCOS_IMAGE}-rdr-svenkat-ocp-storage-lon06-odf-411.txt"
-        //OCP_RELEASE = "4.10"
-
         //Makefile variables
         OPENSHIFT_POWERVS_GIT_TF_DEPLOY_BRANCH="master" //The download branch
 
@@ -192,11 +186,7 @@ pipeline {
                 deployCluster()
             }
         }
-        stage('Run crontab script for capturing outputs of multiple commands') {
-            steps {
-                crontabCommandCaptureScript()
-            }
-        }
+        
         stage('Setup Kubectl') {
             steps {
                 setupKubeconfigOcp4()
@@ -204,7 +194,6 @@ pipeline {
         }
         stage('Exporting ODF Environment Variables') {
             steps {
-                //exportOdfEnvironmentVariables()
                 odfUpgradeEnvironmentVariables()
             }
         }
@@ -231,7 +220,10 @@ pipeline {
         }
         stage('Gathering ODF resources after Upgrade') {
             steps {
-                gatherOdfResourcesAfterUpgrade()
+                script{
+                    sed -i 's|/root/odf-resources.log|/root/odf-resources-upgrade.log|g' "${WORKSPACE}/scripts/check-odf-resources.sh"
+                }
+                checkOdfResources()
             }
         }
 
@@ -240,6 +232,13 @@ pipeline {
                 executeTierTestsOdf()
             }
         }
+
+        stage('Capture tier test summary after upgrading ODF') {
+            steps {
+                odfCaptureTierSummary()
+            }
+        }
+
         stage('Waiting to timeout') {
             steps {
                 script {
@@ -265,11 +264,13 @@ pipeline {
     }
     post {
         always {
-            archiveAllArtifacts("setup-ocs-ci.log", "deploy-ocs-ci.log", "odf-resources.log", "upgrade-ocs-ci.log", "odf-resources-after-upgrade.log",
+            archiveAllArtifacts("setup-ocs-ci.log", "deploy-ocs-ci.log", "odf-resources.log", "upgrade-ocs-ci.log", "odf-resources-upgrade.log",
                 "test-ocs-ci-tier-${TIER_TEST_SUITE}.log")
             cleanupOcp4Cluster()
             checkInfraError()
+            odfProcessTierTestResults()
             cleanupPowerVSResources()
+            notifyBySlack(currentBuild.result, env.MESSAGE)
             cleanWs()
         }
     }
