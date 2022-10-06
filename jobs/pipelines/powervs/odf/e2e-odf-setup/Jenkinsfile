@@ -221,9 +221,13 @@ pipeline {
         stage('Gathering ODF resources after Upgrade') {
             steps {
                 script{
+                    ansiColor('xterm') {
+                        echo ""
+                    }
                     sed -i 's|odf-resources.log|odf-resources-upgrade.log|g' ${WORKSPACE}/scripts/check-odf-resources.sh
+                    checkOdfResources()
                 }
-                checkOdfResources()
+                
             }
         }
 
