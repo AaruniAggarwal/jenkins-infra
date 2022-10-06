@@ -221,7 +221,7 @@ pipeline {
         stage('Gathering ODF resources after Upgrade') {
             steps {
                 script{
-                    sed -i 's|/root/odf-resources.log|/root/odf-resources-upgrade.log|g' "${WORKSPACE}/scripts/check-odf-resources.sh"
+                    sed -i 's|/root/odf-resources.log|/root/odf-resources-upgrade.log|g' ${WORKSPACE}/scripts/check-odf-resources.sh
                 }
                 checkOdfResources()
             }
