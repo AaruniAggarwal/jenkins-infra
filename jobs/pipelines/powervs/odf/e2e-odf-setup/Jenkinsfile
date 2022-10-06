@@ -221,10 +221,20 @@ pipeline {
         stage('Gathering ODF resources after Upgrade') {
             steps {
                 script{
-                    sed -i 's|odf-resources.log|odf-resources-upgrade.log|g' ${WORKSPACE}/scripts/check-odf-resources.sh
-                    
+                    ansiColor('xterm') {
+                        echo ""
+                    }
+                    try {
+                       sed -i 's|odf-resources.log|odf-resources-upgrade.log|g' ${WORKSPACE}/scripts/check-odf-resources.sh
+                       checkOdfResources()     
+                    }
+                    catch (err) {
+                        echo 'Error ! Gatheringing Resources after upgrade failed!'
+                        env.FAILED_STAGE=env.STAGE_NAME
+                        throw err
+                    }
                 }
-               checkOdfResources()   
+               
             }
         }
 
