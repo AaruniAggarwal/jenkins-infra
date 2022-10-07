@@ -225,8 +225,10 @@ pipeline {
                         echo ""
                     }
                     try {
+                       sh ''' 
                        sed -i 's|odf-resources.log|odf-resources-upgrade.log|g' ${WORKSPACE}/scripts/check-odf-resources.sh
-                       checkOdfResources()     
+                       '''     
+                       checkOdfResources()
                     }
                     catch (err) {
                         echo 'Error ! Gatheringing Resources after upgrade failed!'
