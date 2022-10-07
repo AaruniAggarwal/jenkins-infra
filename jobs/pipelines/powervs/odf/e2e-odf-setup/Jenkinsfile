@@ -213,7 +213,7 @@ pipeline {
                 checkOdfResources()
             }
         }
-        stage('Upgrading ODF to "${UPGRADE_OCS_VERSION}"') {
+        stage('Upgrading ODF') {
             steps {
                 upgradeOdf()
             }

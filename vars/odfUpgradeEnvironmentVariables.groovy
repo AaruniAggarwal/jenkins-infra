@@ -19,7 +19,7 @@ def call(){
                echo "export FIPS_ENABLEMENT=${ENABLE_FIPS}" >> odf_vars.sh
                scp -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa odf_vars.sh root@${BASTION_IP}:/root/
                ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "chmod +x odf_vars.sh; source odf_vars.sh"
-               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh; echo "Upgrading ODF Version ${OCS_VERSION}""
+               ssh -o 'StrictHostKeyChecking no' -i ${WORKSPACE}/deploy/id_rsa root@${BASTION_IP} "source odf_vars.sh; echo "Upgrading ODF Version $OCS_VERSION""
                
             '''
         }
