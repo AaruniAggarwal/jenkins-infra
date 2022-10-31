@@ -1,0 +1,53 @@
+@Library('jenkins-upstream-library') _
+
+pipeline {
+    agent {
+        docker {
+        image 'quay.io/powercloud/inbound-agent:4.10-3.2'
+        args '-v /etc/resolv.conf:/etc/resolv.conf'
+        label 'jump-vpc-x86_64'
+       }
+    }
+    
+    environment {
+      PLATFORM = "powervs"
+      ODF_VERSION = "4.11"
+      UPGRADE_OCS_VERSION = "4.11.3"
+      ODF_FULL_BUILD = "4.11.3-3"
+      OCS_REGISTRY_IMAGE="quay.io/rhceph-dev/ocs-registry:latest-stable-4.11.2"
+      TIER_TEST_SUITE = "1"  
+    }
+    stages {
+        
+        stage('Capture tier test summary') {
+            steps {
+                script {
+                    ansiColor('xterm') {
+                        echo ""
+                    }
+                    try {
+                        sh '''
+                                         
+                              echo "Upgraded ODF from `echo $OCS_REGISTRY_IMAGE | cut -d ":" -f 2 | tr -dc '[. [:digit:]]'` to ${UPGRADE_OCS_VERSION}" > slacksummary.txt
+                              echo "= 9 failed, 111 passed, 73 skipped, 767 deselected, 4 warnings, 12 errors in 28223.62s (7:50:23) =" >> slacksummary.txt
+                              
+                        '''
+                    }
+                    catch (err) {
+                        echo 'Error ! Capturing tier test summary failed!'
+                        env.FAILED_STAGE=env.STAGE_NAME
+                        throw err
+                    }
+                }
+            }
+        }
+        
+    }
+    post {
+        always {
+            odfProcessTierTestResults()
+            notifyBySlack(currentBuild.result, env.MESSAGE)
+            cleanWs()
+        }
+    }
+}
