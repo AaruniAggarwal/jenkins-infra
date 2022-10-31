@@ -6,7 +6,7 @@ def call() {
         else {
             slacksummary = "Tier test didn't run"
         }
-        if ( env.FAILED_STAGE = ""  ) {
+        if ( env.FAILED_STAGE == ""  ) {
             env.MESSAGE = "ODF version: `${env.ODF_VERSION}` , ODF build:`${env.ODF_FULL_BUILD}` , Tier:`${env.TIER_TEST_SUITE}` , Failed Stage:`${env.FAILED_STAGE}`"
         }
         else {
