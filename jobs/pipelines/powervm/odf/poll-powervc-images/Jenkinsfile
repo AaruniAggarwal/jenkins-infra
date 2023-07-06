@@ -117,7 +117,7 @@ pipeline {
                                 "cicd-rhcos-4.12.latest.txt", "cicd-rhcos-4.13.latest.txt",
                                 "cicd-rhcos-4.14.latest.txt",
                                 "cicd-rhel-8.2.latest.txt", "cicd-rhel-8.3.latest.txt",
-                                "cicd-rhel-8.4.latest.txt", "cicd-rhel-8.5.latest.txt" ,
+                                "cicd-rhel-8.4.latest.txt", "cicd-rhel-8.5.latest.txt",
                                 "cicd-rhel-8.6.latest.txt", "cicd-rhel-9.0.latest.txt",
                                 "cicd-rhel-9.2.latest.txt")
             cleanWs()
