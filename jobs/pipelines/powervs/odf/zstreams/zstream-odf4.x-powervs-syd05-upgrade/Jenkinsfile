@@ -2,8 +2,10 @@
 
 pipeline {
     agent {
-        kubernetes {
-            inheritFrom 'jenkins-agent'
+        docker {
+            image 'quay.io/powercloud/inbound-agent:4.10-3.3'
+            args '-v /etc/resolv.conf:/etc/resolv.conf'
+            label 'jump-vpc-x86_64'
         }
     }
     parameters {
@@ -20,7 +22,7 @@ pipeline {
     environment {
        //users and credentials. All must be defined in Jenkins Credentials
        GITHUB_USER = credentials('GITHUB_USER')
-       IBMCLOUD_API_KEY = credentials('ODF_IBMCLOUD_API_KEY')
+       IBMCLOUD_API_KEY = credentials('AAR_IBMCLOUD_API_KEY')
        GITHUB_TOKEN = credentials('GITHUB_TOKEN')
        REDHAT_USERNAME = credentials('REDHAT_USERNAME')
        REDHAT_PASSWORD = credentials('REDHAT_PASSWORD')
@@ -95,7 +97,7 @@ pipeline {
                             env.RHCOS_IMAGE = "rhcos-412"
                             break
                         case "4.13":
-                            env.BASTION_IMAGE = "rhel-9"
+                            env.BASTION_IMAGE = "rhel-92"
                             env.RHCOS_IMAGE = "rhcos-413"
                             break
                         default:
